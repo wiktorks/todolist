@@ -1,0 +1,9 @@
+.table-lightdark {
+    background-color: rgb(153, 153, 153);
+}
+
+.button-add {
+    right: 20px;
+    bottom: 20px;
+    left: auto;
+}

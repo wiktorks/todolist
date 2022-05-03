@@ -1,0 +1,20 @@
+{% extends 'employees/base.html' %} 
+{% load static %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static "employees/css/employees.css" %}">
+{% endblock css_files %}
+
+{% block content %}
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Active</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Link</a>
+  </li>
+</ul>
+{% endblock content %}
+
+{% block js_files %}
+{% endblock js_files %}
