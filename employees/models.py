@@ -15,4 +15,4 @@ class Task(models.Model):
     category = models.CharField(max_length=200)
     planned_end_date = models.DateField()
     assigned_worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    # created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
