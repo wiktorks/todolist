@@ -1,0 +1,22 @@
+<div class="modal fade" id="confirmModal{{ forloop.counter }}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="confirmModal{{ forloop.counter }}Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModal{{ forloop.counter }}Label">Delete task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this task?
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="{% url 'task-delete' employee.pk task.pk %}">
+          {% csrf_token %}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <input type="submit" class="btn btn-danger" value="Yes" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -7,38 +7,50 @@
 
 {% block content %}
 {% url 'task-create' employee.pk as create_url %}
+
 {% include "employees/partials/create_modal.html" with form_title="Create new task" %}
 {% include "employees/partials/employee_nav.html" with type="tasks" %}
-<div class="container">
-  <div class="row justify-content-md-center">
-    <div class="col">
+<div class="table-responsive">
+  <table class="table table-hover table-sm">
+    <thead class="">
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Description</th>
+        <th scope="col">Status</th>
+        <th scope="col">Category</th>
+        <th scope="col">Due date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
       {% for task in task_list %}
-      <div class="card">
-        <div class="card-header">
-          {{ task.title }}
-        </div>
-        <div class="card-body">
-          <p class="card-text">{{ task.description }}</p>
-          <p class="card-text">{{ task.status }}</p>
-          <p class="card-text">{{ task.category }}</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Created at: {{ task.created_at|date:'Y-m-d H:i' }}</small>
-        </div>
-      </div>
+      {% include "employees/partials/confirm_modal.html" %}
+      <tr class="clickable-row" data-href="{% url 'employee-details' employee.pk %}">
+        <th scope="row"><input type="checkbox" name="task-completed" id=""></th>
+        <td>{{ task.description }}</td>
+        <td>{{ task.status }}</td>
+        <td>{{ task.category }}</td>
+        <td>
+          {{ task.planned_end_date|date:"M j" }}
+        </td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            data-toggle="modal"
+            data-target="#confirmModal{{ forloop.counter }}"
+          >
+            Usuń
+          </button>
+        </td>
+      </tr>
       {% empty %}
-      <p>Ten pracownik nie ma tasków. Dodaj nowy</p>
+        <p>Ten pracownik nie ma tasków. Dodaj nowy</p>
       {% endfor %}
-    </div>
-  </div>
+    </tbody>
+  </table>
 </div>
-{% comment %} <ul>
-  {% for task in task_list %}
-  <li>{{ task.title }}</li>
-  {% empty %}
-  <li>Sorry, no tasks in this list. Create one!</li>
-  {% endfor %}
-</ul> {% endcomment %}
+</div>
 <button 
   type="button" 
   class="btn btn-success fixed-bottom button-add" 

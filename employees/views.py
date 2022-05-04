@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.views.generic.edit import FormMixin
 
 from .forms import EmployeeForm, TaskForm
@@ -41,7 +41,7 @@ class TaskListView(FormMixin, ListView):
         return context
 
 
-class TaskCreate(CreateView):
+class TaskCreateView(CreateView):
     http_method_names = ["post"]
     model = Task
     fields = ["title", "description", "status", "category", "planned_end_date"]
@@ -56,9 +56,19 @@ class TaskCreate(CreateView):
         return super().form_valid(form)
 
 
+class TaskDeleteView(DeleteView):
+    model = Task
+    pk_url_kwarg = "task_pk"
+
+    def get_success_url(self):
+        employee_id = self.kwargs["pk"]
+        return reverse_lazy("employee-tasks", kwargs={"pk": employee_id})
+
+
 employee_list = EmployeeListView.as_view()
 employee_create = EmployeeCreateView.as_view()
 employee_detail = EmployeeDetailView.as_view()
 
 task_list = TaskListView.as_view()
-task_create = TaskCreate.as_view()
+task_create = TaskCreateView.as_view()
+task_delete = TaskDeleteView.as_view()
