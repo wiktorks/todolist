@@ -20,7 +20,7 @@
     </thead>
     <tbody>
       {% for employee in employees %}
-      <tr>
+      <tr class="clickable-row" data-href="{% url 'employee-details' employee.pk %}">
         <th scope="row">{{ forloop.counter }}.</th>
         <td>{{ employee.name }}</td>
         <td>{{ employee.surname }}</td>
