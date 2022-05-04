@@ -1,0 +1,9 @@
+<h2>Pracownik {{ employee.name }}</h2>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link{% if type == 'details' %} active{% endif %}" href="{% url 'employee-details' employee.pk %}">Information</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if type == 'tasks' %} active{% endif %}" href="{% url 'employee-tasks' employee.pk %}">Tasks</a>
+  </li>
+</ul>

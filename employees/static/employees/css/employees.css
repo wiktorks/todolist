@@ -7,3 +7,7 @@
     bottom: 20px;
     left: auto;
 }
+
+.clickable-row {
+    cursor: pointer;
+}

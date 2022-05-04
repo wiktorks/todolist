@@ -6,14 +6,26 @@
 {% endblock css_files %}
 
 {% block content %}
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" href="#">Active</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Link</a>
-  </li>
-</ul>
+
+{% include "employees/partials/employee_nav.html" with type="details" %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <p>Imie: {{ employee.name }}</p>
+      <p>Nazwisko: {{ employee.surname }}</p>
+    </div>
+    <div class="col-md-6">
+      <p>Stanowisko: {{ employee.position }}</p>
+      <p>Wypłata: {{ employee.month_salary }}</p>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button type="button" class="btn btn-info">Edytuj</button>
+        <button type="button" class="btn btn-danger">Usuń</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
 {% block js_files %}
