@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin
 
-from .forms import EmployeeForm
+from .forms import EmployeeForm, TaskForm
 from .models import Employee, Task
 
 
@@ -15,6 +15,7 @@ class EmployeeListView(FormMixin, ListView):
 
 
 class EmployeeCreateView(CreateView):
+    http_method_names = ["post"]
     model = Employee
     fields = ["name", "surname", "position", "month_salary"]
     success_url = reverse_lazy("employee-list")
@@ -26,8 +27,9 @@ class EmployeeDetailView(DetailView):
     context_object_name = "employee"
 
 
-class TaskListView(ListView):
+class TaskListView(FormMixin, ListView):
     template_name = "employees/employee_tasks.html"
+    form_class = TaskForm
 
     def get_queryset(self):
         self.assigned_worker = get_object_or_404(Employee, pk=self.kwargs["pk"])
@@ -39,8 +41,24 @@ class TaskListView(ListView):
         return context
 
 
+class TaskCreate(CreateView):
+    http_method_names = ["post"]
+    model = Task
+    fields = ["title", "description", "status", "category", "planned_end_date"]
+
+    def get_success_url(self):
+        employee_id = self.kwargs["pk"]
+        return reverse_lazy("employee-tasks", kwargs={"pk": employee_id})
+
+    def form_valid(self, form):
+        assigned_worker = Employee.objects.get(pk=self.kwargs["pk"])
+        form.instance.assigned_worker = assigned_worker
+        return super().form_valid(form)
+
+
 employee_list = EmployeeListView.as_view()
 employee_create = EmployeeCreateView.as_view()
 employee_detail = EmployeeDetailView.as_view()
 
 task_list = TaskListView.as_view()
+task_create = TaskCreate.as_view()

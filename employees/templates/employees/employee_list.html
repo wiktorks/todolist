@@ -6,7 +6,8 @@
 {% endblock css_files %}
 
 {% block content %}
-{% include "employees/partials/create_worker_modal.html" %}
+{% url 'employee-create' as create_url %}
+{% include "employees/partials/create_modal.html" with form_title="Create new employee" %}
 <div class="table-responsive">
   <table class="table table-hover table-sm">
     <thead class="table-lightdark">
@@ -35,7 +36,7 @@
   type="button" 
   class="btn btn-success fixed-bottom button-add" 
   data-toggle="modal" 
-  data-target="#createEmployee"
+  data-target="#createModal"
 >
   <i class="bi bi-plus-circle-fill"></i> Dodaj pracownika
 </button>

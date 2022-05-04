@@ -6,19 +6,44 @@
 {% endblock css_files %}
 
 {% block content %}
+{% url 'task-create' employee.pk as create_url %}
+{% include "employees/partials/create_modal.html" with form_title="Create new task" %}
 {% include "employees/partials/employee_nav.html" with type="tasks" %}
-<ul>
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col">
+      {% for task in task_list %}
+      <div class="card">
+        <div class="card-header">
+          {{ task.title }}
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{ task.description }}</p>
+          <p class="card-text">{{ task.status }}</p>
+          <p class="card-text">{{ task.category }}</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Created at: {{ task.created_at|date:'Y-m-d H:i' }}</small>
+        </div>
+      </div>
+      {% empty %}
+      <p>Ten pracownik nie ma tasków. Dodaj nowy</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% comment %} <ul>
   {% for task in task_list %}
   <li>{{ task.title }}</li>
   {% empty %}
   <li>Sorry, no tasks in this list. Create one!</li>
   {% endfor %}
-</ul>
+</ul> {% endcomment %}
 <button 
   type="button" 
   class="btn btn-success fixed-bottom button-add" 
   data-toggle="modal" 
-  data-target="#createEmployee"
+  data-target="#createModal"
 >
   <i class="bi bi-plus-circle-fill"></i> Utwórz taska
 </button>
