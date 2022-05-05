@@ -131,3 +131,4 @@ dmypy.json
 # vscode stuff
 .vscode
 *.code-workspace
+test_api*.py
