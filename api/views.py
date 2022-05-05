@@ -1,7 +1,11 @@
 from rest_framework.generics import UpdateAPIView
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import HttpResponse
 import datetime
+import csv
+from io import StringIO
 
 from .serializers import TaskSerializer, EmployeeSerializer
 from employees.models import Task, Employee
@@ -33,6 +37,28 @@ class EmployeeTaskTodayListView(APIView):
         ]
 
         return Response(employee_list)
+
+
+@api_view()
+def get_tasks_csv_file(request, pk):
+    tasks = Task.objects.filter(assigned_worker__pk=pk)
+    if tasks:
+        task_serializer = TaskSerializer(tasks, many=True)
+        print(tasks.first().description)
+        print(tasks.first().is_completed)
+        fieldnames = task_serializer.data[0].keys()
+        sio = StringIO()
+        writer = csv.DictWriter(sio, fieldnames=fieldnames, delimiter=",")
+        writer.writeheader()
+        writer.writerows(task_serializer.data)
+
+        response = HttpResponse(
+            sio.getvalue(), content_type="application/text charset=utf-8"
+        )
+        response["Content-Disposition"] = f'attachment; filename="foo.csv"'
+        return response
+
+    return Response({"ni": "mo"})
 
 
 update_task_api_view = UpdateTaskView.as_view()

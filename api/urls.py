@@ -8,4 +8,9 @@ urlpatterns = [
         views.list_tasks_today_api_view,
         name="api-tasks-today-list",
     ),
+    path(
+        "employee/<int:pk>/tasks/download/",
+        views.get_tasks_csv_file,
+        name="api-task-download",
+    ),
 ]

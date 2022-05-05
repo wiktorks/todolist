@@ -11,7 +11,7 @@ $(document).ready(function () {
       },
       url: `http://localhost:8000/api/v1.0/tasks/${task_id}/update/`,
       type: "PATCH",
-      data: JSON.stringify({ is_completed: !this.checked }),
+      data: JSON.stringify({ is_completed: this.checked }),
       success: function (response, textStatus, jqXhr) {
         console.log("Udało się!!!");
       },
