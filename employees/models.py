@@ -9,10 +9,10 @@ class Employee(models.Model):
 
 
 class Task(models.Model):
-    title = models.CharField(max_length=200)
     description = models.TextField()
     status = models.CharField(max_length=200)
     category = models.CharField(max_length=200)
     planned_end_date = models.DateField()
     assigned_worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_completed = models.BooleanField(default=False)

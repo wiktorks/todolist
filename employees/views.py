@@ -44,7 +44,7 @@ class TaskListView(FormMixin, ListView):
 class TaskCreateView(CreateView):
     http_method_names = ["post"]
     model = Task
-    fields = ["title", "description", "status", "category", "planned_end_date"]
+    fields = ["description", "status", "category", "planned_end_date", "is_completed"]
 
     def get_success_url(self):
         employee_id = self.kwargs["pk"]

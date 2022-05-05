@@ -11,7 +11,13 @@ class EmployeeForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ["title", "description", "status", "category", "planned_end_date"]
+        fields = [
+            "description",
+            "status",
+            "category",
+            "planned_end_date",
+            "is_completed",
+        ]
         widgets = {
             "planned_end_date": forms.DateInput(
                 format=("%m/%d/%Y"),
