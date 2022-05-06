@@ -90,19 +90,22 @@ def store_file(file):
 
 @require_http_methods(["POST"])
 def employee_file_upload_view(request):
-    file = request.FILES.get("employee_file", False)
-    if file:
-        store_file(file)
-        print(file)
-        file = import_employees_from_csv_file.delay({"path": "temp/employees.csv"})
-    response_code = file.get(timeout=1)
-    if response_code > 0:
-        messages.add_message(
-            request, messages.SUCCESS, "Successfully added employees from file"
-        )
-    else:
+    try:
+        file = request.FILES.get("employee_file", False)
+        if file:
+            store_file(file)
+            file = import_employees_from_csv_file.delay({"path": "temp/employees.csv"})
+        response_code = file.get(timeout=1)
+        if response_code > 0:
+            messages.add_message(
+                request, messages.SUCCESS, "Successfully added employees from file"
+            )
+        else:
+            messages.add_message(request, messages.ERROR, "Wrong file format.")
+        return redirect("employee-list")
+    except Exception as e:
         messages.add_message(request, messages.ERROR, "Wrong file format.")
-    return redirect("employee-list")
+        return redirect("employee-list")
 
 
 employee_list = EmployeeListView.as_view()
