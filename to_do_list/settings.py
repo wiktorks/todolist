@@ -135,5 +135,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # CELERY
 CELERY_BROKER_URL = "amqp://admin:mypass@rabbitmq:5672"
+CELERY_RESULT_BACKEND = "db+sqlite:///db.sqlite3"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
