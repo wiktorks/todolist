@@ -38,6 +38,11 @@ class TaskListView(FormMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["employee"] = self.assigned_worker
+        statuses = []
+        for task in context["object_list"]:
+            if task.status not in statuses:
+                statuses.append(task.status)
+        context["status_list"] = statuses
         return context
 
 

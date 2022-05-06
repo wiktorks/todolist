@@ -1,9 +1,9 @@
-<h2>Pracownik {{ employee.name }}</h2>
+<h2>{{ employee.name }} {{ employee.surname }}</h2>
 <ul class="nav nav-tabs mb-3">
   <li class="nav-item">
-    <a class="nav-link{% if type == 'details' %} active{% endif %}" href="{% url 'employee-details' employee.pk %}">Information</a>
+    <a class="nav-link{% if type == 'details' %} active{% endif %}" href="{% url 'employee-details' employee.pk %}">Informacje</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if type == 'tasks' %} active{% endif %}" href="{% url 'employee-tasks' employee.pk %}">Tasks</a>
+    <a class="nav-link{% if type == 'tasks' %} active{% endif %}" href="{% url 'employee-tasks' employee.pk %}">Taski</a>
   </li>
 </ul>
