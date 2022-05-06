@@ -2,6 +2,8 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from django.http import HttpResponse
 import datetime
 import csv
@@ -17,6 +19,10 @@ class UpdateTaskView(UpdateAPIView):
 
 
 class EmployeeTaskTodayListView(APIView):
+    @swagger_auto_schema(
+        operation_description="Download list of employees with their corresponding tasks which deadline ends today",
+        responses={200: EmployeeSerializer},
+    )
     def get(self, request, format=None):
         employees = Employee.objects.filter(
             tasks__planned_end_date=datetime.date.today()
@@ -39,7 +45,23 @@ class EmployeeTaskTodayListView(APIView):
         return Response(employee_list)
 
 
-@api_view()
+response_schema_dict = {
+    "200": openapi.Response(
+        description="returns generated csv file with list of tasks belonging to given employee",
+        examples={
+            "application/text": """id,description,status,category,planned_end_date,created_at,is_completed,assigned_worker\n
+            14,desc,stat,cat,2022-05-06,2022-05-04...,False,9"""
+        },
+    )
+}
+
+
+@swagger_auto_schema(
+    method="GET",
+    operation_description="Download list of tasks belonging to given employee",
+    responses=response_schema_dict,
+)
+@api_view(["GET"])
 def get_tasks_csv_file(request, pk):
     tasks = Task.objects.filter(assigned_worker__pk=pk)
     if tasks:
