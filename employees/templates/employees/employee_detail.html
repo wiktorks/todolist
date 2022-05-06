@@ -20,8 +20,10 @@
     </div>
     <div class="row">
       <div class="col">
-        <button type="button" class="btn btn-info">Edytuj</button>
-        <button type="button" class="btn btn-danger">Usuń</button>
+        <form method="POST" action="{% url 'employee-delete' employee.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-danger" type="submit">Usuń</button>
+        </form>
       </div>
     </div>
   </div>

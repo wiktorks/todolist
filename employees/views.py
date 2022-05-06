@@ -1,10 +1,14 @@
+from django.contrib import messages
+from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.views.generic.edit import FormMixin
+from django.views.decorators.http import require_http_methods
 
 from .forms import EmployeeForm, TaskForm
 from .models import Employee, Task
+from .tasks import import_employees_from_csv_file
 
 
 class EmployeeListView(FormMixin, ListView):
@@ -25,6 +29,14 @@ class EmployeeDetailView(DetailView):
     model = Employee
     template_name = "employees/employee_detail.html"
     context_object_name = "employee"
+
+
+class EmployeeDeleteView(DeleteView):
+    model = Employee
+    pk_url_kwarg = "pk"
+
+    def get_success_url(self):
+        return reverse_lazy("employee-list")
 
 
 class TaskListView(FormMixin, ListView):
@@ -70,9 +82,33 @@ class TaskDeleteView(DeleteView):
         return reverse_lazy("employee-tasks", kwargs={"pk": employee_id})
 
 
+def store_file(file):
+    with open("temp/employees.csv", "wb+") as dest:
+        for chunk in file.chunks():
+            dest.write(chunk)
+
+
+@require_http_methods(["POST"])
+def employee_file_upload_view(request):
+    file = request.FILES.get("employee_file", False)
+    if file:
+        store_file(file)
+        print(file)
+        file = import_employees_from_csv_file.delay({"path": "temp/employees.csv"})
+    response_code = file.get(timeout=1)
+    if response_code > 0:
+        messages.add_message(
+            request, messages.SUCCESS, "Successfully added employees from file"
+        )
+    else:
+        messages.add_message(request, messages.ERROR, "Wrong file format.")
+    return redirect("employee-list")
+
+
 employee_list = EmployeeListView.as_view()
 employee_create = EmployeeCreateView.as_view()
 employee_detail = EmployeeDetailView.as_view()
+employee_delete = EmployeeDeleteView.as_view()
 
 task_list = TaskListView.as_view()
 task_create = TaskCreateView.as_view()
