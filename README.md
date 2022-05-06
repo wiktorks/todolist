@@ -9,6 +9,8 @@ This is a simple task management application. It provides basic functionality fo
   
 * Celery and RabbitMQ
 
+* Swagger
+
 
 ### Prerequisites:
 - Installed [Docker for Windows](https://docs.docker.com/docker-for-windows/install/) or [Linux](https://runnable.com/docker/install-docker-on-linux) 
@@ -21,3 +23,12 @@ This is a simple task management application. It provides basic functionality fo
 2. Run `docker-compose up --build` command.
 3. Open http://localhost:8000 in your browser.
 4. When you finished working with the application press **CTRL+C** in your command prompt to terminate the process
+
+
+### File upload
+
+You can create quickly list of new employees by uploading a csv file with employee data. The file must have specific format as shown below, each column separated by comma ",":
+
+| name | surname | position | month_salary |
+| --- | --- | --- | --- |
+| string up to 100 characters | string up to 100 characters | string up to 200 characters | decimal number with 8 digits, including 2 digit delimiter |
