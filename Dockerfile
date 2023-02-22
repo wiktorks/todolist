@@ -7,3 +7,4 @@ COPY ./requirements.txt /app
 RUN pip install -r /app/requirements.txt
 
 WORKDIR /app
+RUN mkdir /app/temp

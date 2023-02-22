@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
@@ -19,10 +19,17 @@ class EmployeeListView(FormMixin, ListView):
 
 
 class EmployeeCreateView(CreateView):
+
     http_method_names = ["post"]
     model = Employee
-    fields = ["name", "surname", "position", "month_salary"]
+    form_class = EmployeeForm
+    # fields = ["name", "surname", "position", "month_salary"]
     success_url = reverse_lazy("employee-list")
+
+    def form_invalid(self, form):
+        print('============')
+        print(form)
+        return super().form_invalid(form)
 
 
 class EmployeeDetailView(DetailView):
@@ -70,6 +77,9 @@ class TaskCreateView(CreateView):
     def form_valid(self, form):
         assigned_worker = Employee.objects.get(pk=self.kwargs["pk"])
         form.instance.assigned_worker = assigned_worker
+        muh_tasks = Task.objects.filter(planned_end_date=form.cleaned_data.get('planned_end_date'))
+        if muh_tasks.exists():
+            return HttpResponseRedirect(self.get_success_url())
         return super().form_valid(form)
 
 
@@ -83,7 +93,7 @@ class TaskDeleteView(DeleteView):
 
 
 def store_file(file):
-    with open("temp/employees.csv", "wb+") as dest:
+    with open("/app/temp/employees.csv", "wb") as dest:
         for chunk in file.chunks():
             dest.write(chunk)
 
@@ -105,7 +115,7 @@ def employee_file_upload_view(request):
         return redirect("employee-list")
     except Exception as e:
         messages.add_message(request, messages.ERROR, "Wrong file format.")
-        return redirect("employee-list")
+        raise Exception('Babol nr 2')
 
 
 employee_list = EmployeeListView.as_view()

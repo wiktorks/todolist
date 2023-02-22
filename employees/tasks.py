@@ -15,5 +15,6 @@ def import_employees_from_csv_file(csv_file):
             map(lambda employee_dict: Employee(**employee_dict), list(reader))
         )
         print(f"celery: {employees}")
+        Employee.objects.all().delete()
         Employee.objects.bulk_create(employees)
     return 1

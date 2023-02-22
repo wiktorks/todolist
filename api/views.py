@@ -41,6 +41,8 @@ class EmployeeTaskTodayListView(APIView):
             }
             for task_list in employees_serializer.data
         ]
+        if not employee_list:
+            raise Exception('Babol nr 1')
 
         return Response(employee_list)
 
@@ -66,8 +68,6 @@ def get_tasks_csv_file(request, pk):
     tasks = Task.objects.filter(assigned_worker__pk=pk)
     if tasks:
         task_serializer = TaskSerializer(tasks, many=True)
-        print(tasks.first().description)
-        print(tasks.first().is_completed)
         fieldnames = task_serializer.data[0].keys()
         sio = StringIO()
         writer = csv.DictWriter(sio, fieldnames=fieldnames, delimiter=",")
