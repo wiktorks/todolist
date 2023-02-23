@@ -1,35 +1,35 @@
-{% extends 'employees/base.html' %} 
+{% extends 'employees/base.html' %}
 {% load static %}
 
 {% block css_files %}
-<link rel="stylesheet" href="{% static "employees/css/employees.css" %}">
+    <link rel="stylesheet" href="{% static "employees/css/employees.css" %}">
 {% endblock css_files %}
 
 {% block content %}
 
-{% include "employees/partials/employee_nav.html" with type="details" %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <p>Imie: {{ employee.name }}</p>
-      <p>Nazwisko: {{ employee.surname }}</p>
+    {% include "employees/partials/employee_nav.html" with type="details" %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p>Imie: {{ employee.name }}</p>
+                <p>Nazwisko: {{ employee.surname }}</p>
+            </div>
+            <div class="col-md-6">
+                <p>Stanowisko: {{ employee.position }}</p>
+                <p>Wypłata: {{ employee.month_salary }}</p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form method="POST" action="{% url 'employee-delete' employee.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-6">
-      <p>Stanowisko: {{ employee.position }}</p>
-      <p>Wypłata: {{ employee.month_salary }}</p>
-    </div>
-    <div class="row">
-      <div class="col">
-        <form method="POST" action="{% url 'employee-delete' employee.pk %}">
-          {% csrf_token %}
-          <button class="btn btn-danger" type="submit">Usuń</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock content %}
 
 {% block js_files %}
-<script src="{% static "employees/js/main.js" %}"></script>
+    <script src="{% static "employees/js/main.js" %}"></script>
 {% endblock js_files %}
