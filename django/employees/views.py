@@ -16,20 +16,26 @@ class EmployeeListView(FormMixin, ListView):
     form_class = EmployeeForm
     template_name = "employees/employee_list.html"
     context_object_name = "employees"
+    http_method_names = ['get','post']
+
+    def post(self,*args,**kwargs):
+        return redirect('employee-list')
 
 
 class EmployeeCreateView(CreateView):
-
     http_method_names = ["post"]
     model = Employee
     form_class = EmployeeForm
-    # fields = ["name", "surname", "position", "month_salary"]
+    template_name = 'employees/partials/modal_form.html'
     success_url = reverse_lazy("employee-list")
 
-    def form_invalid(self, form):
-        print('============')
-        print(form)
-        return super().form_invalid(form)
+    def form_valid(self, form):
+        self.object = form.save()
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs,create_url=reverse_lazy('employee-create'))
+
 
 
 class EmployeeDetailView(DetailView):
@@ -68,6 +74,7 @@ class TaskListView(FormMixin, ListView):
 class TaskCreateView(CreateView):
     http_method_names = ["post"]
     model = Task
+    template_name = 'employees/partials/modal_form.html'
     fields = ["description", "status", "category", "planned_end_date", "is_completed"]
 
     def get_success_url(self):
@@ -80,7 +87,11 @@ class TaskCreateView(CreateView):
         muh_tasks = Task.objects.filter(planned_end_date=form.cleaned_data.get('planned_end_date'))
         if muh_tasks.exists():
             return HttpResponseRedirect(self.get_success_url())
-        return super().form_valid(form)
+        self.object = form.save()
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs,create_url=reverse_lazy('task-create',kwargs={'pk':self.kwargs["pk"]}))
 
 
 class TaskDeleteView(DeleteView):

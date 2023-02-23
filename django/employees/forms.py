@@ -4,16 +4,14 @@ from .models import Employee, Task
 
 
 class EmployeeForm(forms.ModelForm):
-    name = forms.CharField(max_length=100, validators=[RegexValidator(r'^[a-zA-Z]+$', message='Imie musi się składać z samych liter')])
+    name = forms.CharField(max_length=100,
+                           validators=[RegexValidator(r'^[a-zA-Z]+$', message='Imie musi się składać z samych liter')])
+    surname = forms.CharField(max_length=100, validators=[
+        RegexValidator(r'^[a-zA-Z]+$', message='Nazwisko musi się składać z samych liter')])
+
     class Meta:
         model = Employee
         fields = ["name", "surname", "position", "month_salary"]
-
-    # def clean(self):
-    #     data = super.clean()
-    #     print(data)
-    #     print(self.fields['name'].errors)
-    #     return data
 
 
 class TaskForm(forms.ModelForm):

@@ -1,0 +1,9 @@
+{% load crispy_forms_tags %}
+<form id="modalForm" action="{{ create_url }}" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>
