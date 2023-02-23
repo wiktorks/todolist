@@ -2,17 +2,20 @@ version: "3.5"
 
 services:
   server:
+    image: my_server_image
     build:
-      context: .
-      dockerfile: ./Dockerfile
+#      context: ./django
+      dockerfile: ./django/Dockerfile
     volumes:
-      - ./:/app
+      - ./django:/app
       - ./temp:/app/temp
+      - static:/static
     ports:
       - "8000:8000"
-    command: > 
-      bash -c "python manage.py migrate && python manage.py migrate &&
-      python manage.py runserver 0.0.0.0:8000"
+    entrypoint: ["sh", "/app/entrypoint.sh"]
+#    command: >
+#      bash -c "python manage.py migrate && python manage.py migrate &&
+#      python manage.py runserver 0.0.0.0:8000"
 
   rabbitmq:
     hostname: rabbitmq
@@ -28,12 +31,24 @@ services:
 
   celery:
     hostname: celery
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: my_server_image
+#    build:
+#      context: .
+#      dockerfile: django/Dockerfile
     command: celery -A to_do_list worker -l info
     volumes:
-      - ./:/app
+      - ./django:/app
     depends_on:
       - server
       - rabbitmq
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+
+volumes:
+  static:
