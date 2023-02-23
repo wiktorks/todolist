@@ -1,10 +1,6 @@
 {% extends 'employees/base.html' %} 
 {% load static %}
 
-{% block css_files %}
-<link rel="stylesheet" href="{% static "employees/css/employees.css" %}">
-{% endblock css_files %}
-
 {% block content %}
 
 {% include "employees/partials/employee_nav.html" with type="details" %}
@@ -29,7 +25,3 @@
   </div>
 </div>
 {% endblock content %}
-
-{% block js_files %}
-<script src="{% static "employees/js/main.js" %}"></script>
-{% endblock js_files %}
