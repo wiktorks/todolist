@@ -19,6 +19,11 @@ spec:
           image: qasciekiaks.azurecr.io/server:latest
           imagePullPolicy: Always
           command: ["sh", "/app/entrypoint.sh"]
+          env:
+            - name: QUEUE_NAME
+              value: "server-5"
+            - name: REDIS_NR
+              value: "5"
           ports:
             - containerPort: 8000
           volumeMounts:
@@ -27,8 +32,13 @@ spec:
         - name: celery-5
           image: qasciekiaks.azurecr.io/server:latest
           imagePullPolicy: Always
+          env:
+            - name: QUEUE_NAME
+              value: "server-5"
+            - name: REDIS_NR
+              value: "5"
           command: [ "/bin/sh","-c" ]
-          args: [ "celery -A  to_do_list worker -l info;" ]
+          args: [ "celery -A  to_do_list worker -l info -Q $(QUEUE_NAME);" ]
           volumeMounts:
             - name: tmp-server-5
               mountPath: /app/temp

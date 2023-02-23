@@ -18,6 +18,11 @@ spec:
         - name: server-2
           image: qasciekiaks.azurecr.io/server:latest
           imagePullPolicy: Always
+          env:
+            - name: QUEUE_NAME
+              value: "server-2"
+            - name: REDIS_NR
+              value: "2"
           command: ["sh", "/app/entrypoint.sh"]
           ports:
             - containerPort: 8000
@@ -27,8 +32,13 @@ spec:
         - name: celery-2
           image: qasciekiaks.azurecr.io/server:latest
           imagePullPolicy: Always
+          env:
+            - name: QUEUE_NAME
+              value: "server-2"
+            - name: REDIS_NR
+              value: "2"
           command: [ "/bin/sh","-c" ]
-          args: [ "celery -A  to_do_list worker -l info;" ]
+          args: [ "celery -A  to_do_list worker -l info -Q $(QUEUE_NAME);" ]
           volumeMounts:
             - name: tmp-server-2
               mountPath: /app/temp

@@ -24,11 +24,21 @@ spec:
           volumeMounts:
             - name: tmp-server-8
               mountPath: /app/temp
+          env:
+            - name: QUEUE_NAME
+              value: "server-8"
+            - name: REDIS_NR
+              value: "8"
         - name: celery-8
           image: qasciekiaks.azurecr.io/server:latest
           imagePullPolicy: Always
+          env:
+            - name: QUEUE_NAME
+              value: "server-8"
+            - name: REDIS_NR
+              value: "8"
           command: [ "/bin/sh","-c" ]
-          args: [ "celery -A  to_do_list worker -l info;" ]
+          args: [ "celery -A  to_do_list worker -l info -Q $(QUEUE_NAME);" ]
           volumeMounts:
             - name: tmp-server-8
               mountPath: /app/temp
