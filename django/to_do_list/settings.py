@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -23,9 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-%ac@^_iwfzv#^t*nkusmglz+f958msuyk$^&__suqkz#lt-qae"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-
+DEBUG = False
 
 # Application definition
 
@@ -46,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -76,17 +74,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "to_do_list.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "temp/db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -106,7 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -117,7 +112,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -136,11 +130,55 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ["http://0.0.0.0"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://953d3bb9f99f.asen.bio",
+    "https://153d3bb1f11f.asen.bio",
+    "https://353d3bb1f11f.asen.bio",
+    "https://453d3bb1f11f.asen.bio",
+    "https://553d3bb1f11f.asen.bio",
+    "https://653d3bb1f11f.asen.bio",
+    "https://753d3bb1f11f.asen.bio",
+    "https://853d3bb1f11f.asen.bio",
+]
 # CORS_ALLOWED_ORIGINS = ["http://0.0.0.0"]
 
 # CELERY
-CELERY_BROKER_URL = "amqp://admin:mypass@rabbitmq:5672"
-CELERY_RESULT_BACKEND = "db+sqlite:///db.sqlite3"
+# CELERY_BROKER_URL = "amqp://admin:mypass@rabbitmq:5672"
+CELERY_BROKER_URL = "redis://:VT9Ur2AHdM@my-redis-master.default.svc.cluster.local:6379"
+CELERY_RESULT_BACKEND = "db+sqlite:///temp/db.sqlite3"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        '': {
+            'level': 'DEBUG',
+            'handlers': ['console']
+        },
+        'celery.task': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}

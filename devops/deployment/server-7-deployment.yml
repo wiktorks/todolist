@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-7
+  namespace: qa-server-7
+  labels:
+    app: server-7
+spec:
+  selector:
+    matchLabels:
+      app: server-7
+  template:
+    metadata:
+      labels:
+        app: server-7
+    spec:
+      containers:
+        - name: server-7
+          image: qasciekiaks.azurecr.io/server:latest
+          imagePullPolicy: Always
+          command: ["sh", "/app/entrypoint.sh"]
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: tmp-server-7
+              mountPath: /app/temp
+        - name: celery-7
+          image: qasciekiaks.azurecr.io/server:latest
+          imagePullPolicy: Always
+          command: [ "/bin/sh","-c" ]
+          args: [ "celery -A  to_do_list worker -l info;" ]
+          volumeMounts:
+            - name: tmp-server-7
+              mountPath: /app/temp
+      volumes:
+        - name: tmp-server-7
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-7
+  namespace: qa-server-7
+spec:
+  selector:
+    app: server-7
+  type: ClusterIP
+  ports:
+    - port: 80
+      name: http
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-7
+  namespace: qa-server-7
+spec:
+  rules:
+    - host: '753d3bb1f11f.asen.bio'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-7
+                port:
+                  number: 80

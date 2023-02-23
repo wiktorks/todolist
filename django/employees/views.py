@@ -1,3 +1,5 @@
+import time
+
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -116,7 +118,10 @@ def employee_file_upload_view(request):
         if file:
             store_file(file)
             file = import_employees_from_csv_file.delay({"path": "temp/employees.csv"})
-        response_code = file.get(timeout=1)
+
+
+
+        response_code = file.get(timeout=1) if file.ready() else time.sleep(.5)
         if response_code > 0:
             messages.add_message(
                 request, messages.SUCCESS, "Successfully added employees from file"
